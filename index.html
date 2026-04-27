@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#070708" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>لوحة التحكم</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <header class="topbar">
+      <div class="topbar__title">
+        <button id="menuBtn" class="icon-btn mobile-only" aria-label="القائمة">☰</button>
+        <div>
+          <p class="eyebrow"></p>
+          <h1 id="pageTitle">الرئيسية</h1>
+          <p id="pageSub" class="subtle">مراقبة وإدارة كاملة للنظام</p>
+        </div>
+      </div>
+
+      <div class="topbar__tools">
+        <div class="searchbox">
+          <input id="globalSearch" type="search" placeholder="بحث سريع داخل البيانات" />
+          <button id="clearSearch" class="icon-btn clear-btn" aria-label="مسح البحث">×</button>
+        </div>
+        <button id="refreshBtn" class="ghost-btn">تحديث</button>
+        <button id="logoutBtn" class="ghost-btn">خروج</button>
+      </div>
+
+      <div class="topbar__meta">
+        <button id="notifBtn" class="icon-btn" aria-label="التنبيهات">🔔</button>
+        <div class="user-chip">
+          <span class="user-chip__role" id="roleBadge">-</span>
+          <strong id="userBadge">-</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="hero card">
+        <div class="hero__copy">
+          <p class="eyebrow gold">لوحة تحكم إدارية</p>
+          <h2>التحكم في الطلبات والمنتجات والعملاء والتقارير من خلال الإدارة</h2>
+          <p class="subtle">أ/محمد سعيد</p>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+          <article class="mini-stat"><span>إجمالي الطلبات</span><strong id="statOrders">0</strong></article>
+          <article class="mini-stat"><span>المبيعات</span><strong id="statSales">0 EGP</strong></article>
+          <article class="mini-stat"><span>العملاء</span><strong id="statCustomers">0</strong></article>
+          <article class="mini-stat"><span>المنتجات</span><strong id="statProducts">0</strong></article>
+        </div>
+      </section>
+
+      <section class="rail-section card">
+        <div class="section-head">
+          <div>
+            <h3>التنقل السريع</h3>
+            <p class="subtle">اسحب يمينًا ويسارًا وافتح القسم مباشرة</p>
+          </div>
+          <span class="pill" id="sectionPill">home</span>
+        </div>
+        <div class="section-rail" id="quickRail" aria-label="التنقل السريع">
+          <button class="rail-card" data-go="orders"><strong>الطلبات</strong><span>قائمة + حالة</span></button>
+          <button class="rail-card" data-go="users"><strong>العملاء</strong><span>العملاء والمناديب</span></button>
+          <button class="rail-card" data-go="products"><strong>المنتجات</strong><span>أسعار وظهور</span></button>
+          <button class="rail-card" data-go="companies"><strong>الشركات</strong><span>اللوجو والخصم</span></button>
+          <button class="rail-card" data-go="reports"><strong>التقارير</strong><span>مؤشرات وتحليلات</span></button>
+          <button class="rail-card" data-go="settings"><strong>الإعدادات</strong><span>الاتصال والصلاحيات</span></button>
+        </div>
+      </section>
+
+      <nav class="dock card" aria-label="الاختصارات">
+        <button class="dock__item active" data-sec="home"><span>⌂</span><strong>الرئيسية</strong></button>
+        <button class="dock__item" data-sec="orders"><span>↳</span><strong>الطلبات</strong></button>
+        <button class="dock__item" data-sec="reports"><span>◌</span><strong>التقارير</strong></button>
+        <button class="dock__item" data-sec="settings"><span>⚙</span><strong>الإعدادات</strong></button>
+      </nav>
+
+      <section class="section active" data-sec="home">
+        <div class="panel-grid">
+          <article class="card panel">
+            <div class="section-head">
+              <div>
+                <h3>أحدث الطلبات</h3>
+                <p class="subtle">بطاقات مختصرة </p>
+              </div>
+              <span class="pill" id="latestCount">0</span>
+            </div>
+            <div id="latestOrders" class="stack"></div>
+          </article>
+
+          <article class="card panel">
+            <div class="section-head">
+              <div>
+                <h3>أعلى المنتجات</h3>
+                <p class="subtle">الأكثر طلبًا</p>
+              </div>
+              <span class="pill">Top</span>
+            </div>
+            <div id="topProducts" class="stack"></div>
+          </article>
+
+          <article class="card panel">
+            <div class="section-head">
+              <div>
+                <h3>أعلى الشركات</h3>
+                <p class="subtle">أعلى قيمة تشغيلية</p>
+              </div>
+              <span class="pill">Top</span>
+            </div>
+            <div id="topCompanies" class="stack"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" data-sec="orders">
+        <div class="section-head sticky-head">
+          <div>
+            <h3>الطلبات</h3>
+            <p class="subtle">قراءة سريعة + فتح التفاصيل + تغيير الحالة</p>
+          </div>
+          <select id="statusFilter" class="select-pill">
+            <option value="">كل الحالات</option>
+            <option value="pending">pending</option>
+            <option value="confirmed">confirmed</option>
+            <option value="processing">processing</option>
+            <option value="shipped">shipped</option>
+            <option value="delivered">delivered</option>
+            <option value="paid">paid</option>
+            <option value="draft">draft</option>
+          </select>
+        </div>
+        <div id="ordersBody" class="card-grid"></div>
+      </section>
+
+      <section class="section" data-sec="users">
+        <div class="section-head sticky-head">
+          <div>
+            <h3>المستخدمون</h3>
+            <p class="subtle">العملاء والمناديب في شكل بطاقات</p>
+          </div>
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="customers">العملاء</button>
+            <button class="tab" data-tab="sales_reps">المناديب</button>
+          </div>
+        </div>
+        <div id="usersBody" class="card-grid"></div>
+        <article class="card admin-only panel" data-admin-only="1">
+          <div class="section-head">
+            <div>
+              <h3>المستحدمين الاداريين</h3>
+              <p class="subtle">إدارة صلاحيات الدخول</p>
+            </div>
+            <button id="addDashUser" class="ghost-btn">إضافة مستخدم</button>
+          </div>
+          <div id="dashUsersBody" class="stack"></div>
+        </article>
+      </section>
+
+      <section class="section" data-sec="products">
+        <div class="section-head sticky-head">
+          <div>
+            <h3>المنتجات</h3>
+            <p class="subtle">اسم المنتج، السعر، الحالة، والظهور</p>
+          </div>
+        </div>
+        <div id="productsBody" class="card-grid"></div>
+      </section>
+
+      <section class="section" data-sec="companies">
+        <div class="section-head sticky-head">
+          <div>
+            <h3>الشركات</h3>
+            <p class="subtle">اللوجو والظهور والخصم</p>
+          </div>
+        </div>
+        <div id="companiesBody" class="card-grid"></div>
+      </section>
+
+      <section class="section" data-sec="reports">
+        <div class="section-head sticky-head">
+          <div>
+            <h3>التقارير</h3>
+            <p class="subtle">اعتماد على الـviews الرسمية</p>
+          </div>
+          <span class="pill" id="statusTotal">0</span>
+        </div>
+
+        <div class="filter-row card">
+          <input id="startDate" type="date" class="select-pill" />
+          <input id="endDate" type="date" class="select-pill" />
+          <button id="applyFilter" class="primary-btn">تطبيق</button>
+        </div>
+
+        <div class="panel-grid two-up">
+          <article class="card panel">
+            <div class="section-head"><h3>المبيعات حسب التاريخ</h3><span class="pill" id="salesRange">0 EGP</span></div>
+            <div id="dailySales" class="stack"></div>
+          </article>
+          <article class="card panel">
+            <div class="section-head"><h3>الطلبات حسب الحالة</h3><span class="pill">Status</span></div>
+            <div id="statusBreakdown" class="stack"></div>
+          </article>
+          <article class="card panel">
+            <div class="section-head"><h3>أعلى العملاء</h3><span class="pill">Top</span></div>
+            <div id="topCustomers" class="stack"></div>
+          </article>
+          <article class="card panel rep-panel">
+            <div class="section-head">
+              <div>
+                <h3>تقارير المناديب</h3>
+                <p class="subtle">اضغط على أي مندوب لفتح التفاصيل</p>
+              </div>
+              <span class="pill">Reps</span>
+            </div>
+            <div id="repPerformance" class="stack"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" data-sec="settings">
+        <div class="section-head sticky-head">
+          <div>
+            <h3>الإعدادات</h3>
+            <p class="subtle">الاتصال والتحكم المحلي</p>
+          </div>
+        </div>
+        <div class="panel-grid two-up">
+          <article class="card panel">
+            <div class="section-head"><h3>+201040880002</h3></div>
+            <label class="field">
+              <span>الرقم</span>
+              <input id="waInput" type="text" placeholder="2015..." />
+            </label>
+            <button id="saveWa" class="primary-btn">حفظ</button>
+          </article>
+          <article class="card panel">
+            <div class="section-head"><h3>الصلاحيات</h3></div>
+            <div class="stack">
+              <div class="row-item"><strong>admin</strong><span>تحكم كامل</span></div>
+              <div class="row-item"><strong>manager</strong><span>الطلبات + التقارير</span></div>
+              <div class="row-item"><strong>viewer</strong><span>تقارير فقط</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <button id="menuFab" class="fab" aria-label="فتح القائمة">☰</button>
+  </div>
+
+  <div class="sheet-backdrop hidden" id="menuSheetBackdrop" data-close="menuSheet"></div>
+  <aside class="sheet hidden" id="menuSheet" aria-label="القائمة السفلية">
+    <div class="sheet__handle"></div>
+    <div class="sheet__head">
+      <div>
+        <strong>التنقل السريع</strong>
+        <p class="subtle">اختر القسم مباشرة</p>
+      </div>
+      <button class="icon-btn" data-close="menuSheet">×</button>
+    </div>
+    <div class="sheet__list">
+      <button class="sheet-link" data-sec="home">الرئيسية</button>
+      <button class="sheet-link" data-sec="orders">الطلبات</button>
+      <button class="sheet-link" data-sec="users">المستخدمون</button>
+      <button class="sheet-link" data-sec="products">المنتجات</button>
+      <button class="sheet-link" data-sec="companies">الشركات</button>
+      <button class="sheet-link" data-sec="reports">التقارير</button>
+      <button class="sheet-link" data-sec="settings">الإعدادات</button>
+    </div>
+  </aside>
+
+  <div class="sheet-backdrop hidden" id="loginModalBackdrop"></div>
+  <section class="sheet sheet--login hidden" id="loginModal" aria-label="تسجيل الدخول">
+    <div class="sheet__handle"></div>
+    <div class="sheet__head">
+      <div>
+        <strong>تسجيل دخول الادارة</strong>
+        <p class="subtle">الدخول مطلوب قبل استخدام لوحة التحكم</p>
+      </div>
+    </div>
+    <div class="form-stack">
+      <label class="field"><span>اسم المستخدم</span><input id="loginUser" type="text" placeholder="admin" /></label>
+      <label class="field"><span>كلمة المرور</span><input id="loginPass" type="password" placeholder="••••••••" /></label>
+      <button id="loginBtn" class="primary-btn full">دخول</button>
+    </div>
+  </section>
+
+  <div class="sheet-backdrop hidden" id="detailsModalBackdrop"></div>
+  <section class="sheet sheet--details hidden" id="detailsModal" aria-label="التفاصيل">
+    <div class="sheet__handle"></div>
+    <div class="sheet__head">
+      <div>
+        <strong id="detailsTitle">التفاصيل</strong>
+        <p id="detailsSub" class="subtle">-</p>
+      </div>
+      <button class="icon-btn" data-close="detailsModal">×</button>
+    </div>
+    <div id="detailsBody" class="details-body"></div>
+  </section>
+
+  <div class="sheet-backdrop hidden" id="editModalBackdrop"></div>
+  <section class="sheet sheet--edit hidden" id="editModal" aria-label="التعديل">
+    <div class="sheet__handle"></div>
+    <div class="sheet__head">
+      <div>
+        <strong id="editTitle">التعديل</strong>
+        <p id="editSub" class="subtle">-</p>
+      </div>
+      <button class="icon-btn" data-close="editModal">×</button>
+    </div>
+    <form id="editForm" class="form-stack"></form>
+    <button id="saveEdit" class="primary-btn full">حفظ</button>
+  </section>
+
+  <div class="sheet-backdrop hidden" id="dashUserModalBackdrop"></div>
+  <section class="sheet sheet--edit hidden" id="dashUserModal" aria-label="إضافة مستخدم">
+    <div class="sheet__handle"></div>
+    <div class="sheet__head">
+      <div>
+        <strong>إضافة مستخدم</strong>
+        <p class="subtle">إنشاء حساب جديد للدخول</p>
+      </div>
+      <button class="icon-btn" data-close="dashUserModal">×</button>
+    </div>
+    <form id="dashUserForm" class="form-stack">
+      <label class="field"><span>اسم المستخدم</span><input name="username" type="text" /></label>
+      <label class="field"><span>كلمة المرور</span><input name="password" type="text" /></label>
+      <label class="field">
+        <span>الدور</span>
+        <select name="role">
+          <option value="viewer">viewer</option>
+          <option value="manager">manager</option>
+          <option value="admin">admin</option>
+        </select>
+      </label>
+      <button id="createDashUser" class="primary-btn full" type="button">إضافة</button>
+    </form>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="dashboard.js"></script>
+</body>
+</html>
